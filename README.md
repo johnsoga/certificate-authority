@@ -1,15 +1,16 @@
 # How to Create a Certificate Authority
 
-What is the fundamental problem that a CA is trying solve? In essence it is trying to solve how to allow two or more parties to communicate with each other, trusting that whomever they are communicating with is infact that intended party. Or put another way, how can person A faithfully communicate with person B digitally without being able to physically verify person B's identity.
+What is the fundamental problem that a CA is trying solve? In essence it is trying to solve how to allow two or more parties to communicate with each other, trusting that whomever they are communicating with is in-fact that intended party. Or put another way, how can Alice faithfully communicate with Bob digitally without being able to physically verify Bob's identity.
 
-The answer to this is through a CA (Certificate Authority) essentially a third party that both parties trust. The CA issues and signs digital certificates that can be used to verify an entity. In this case person B may request a certificate to be used by others to verify itself. The idea being that if person A and B both trust the CA and the CA has given person B a certificate that it signed authenticating person B's identity then person A should trust that person B is who they claim to be if theu present the certificate.
+The answer to this is through a CA (Certificate Authority) essentially a third party that both parties trust. The CA issues and signs digital certificates that can be used to verify an entity. In this case person B may request a certificate to be used by others to verify itself. In theory, if Alice and Bob both trust the CA, and the CA has given Bob a certificate. A certificate that the CA has signed authenticating its origin. Then, when Alice is presented the Bob's by Bob Alice should trust that she is in fact communicating with Bob
 
 ## Certificate Request Process
 ### CSR
 A CSR (Certificate Signing Request) is a request sent to an RA (Registration Authority) for a certificate to be issued.
+
 >*Generally speaking, the CA and RA will both be within the same organization so the term CA will be used here instead as a generic term.*
 
-CSR's are [PKCS#10](https://tools.ietf.org/html/rfc2986) formatted documents defined using the [ASN.1](https://en.wikipedia.org/wiki/ASN.1) structure as outlined in specification [RFC2986](https://tools.ietf.org/html/rfc2986). PKCS#10 is a binary format and as such is often instead encoded further via the BASE64 [PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) format as defined in [RFC7468](https://tools.ietf.org/html/rfc7468) for general ease of use.
+[CSR's](https://en.wikipedia.org/wiki/Certificate_signing_request) are [PKCS#10](https://tools.ietf.org/html/rfc2986) formatted documents defined using the [ASN.1](https://en.wikipedia.org/wiki/ASN.1) structure as outlined in specification [RFC2986](https://tools.ietf.org/html/rfc2986). PKCS#10 is a binary format and as such is often instead encoded further via the BASE64 [PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) format as defined in [RFC7468](https://tools.ietf.org/html/rfc7468) for general ease of use.
 
 Let's take a look at the `example.com.csr.pem` CSR in `examples/`:
 
