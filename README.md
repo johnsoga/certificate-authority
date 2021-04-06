@@ -2,7 +2,7 @@
 
 What is the fundamental problem that a CA is trying solve? In essence it is trying to solve how to allow two or more parties to communicate with each other, trusting that whomever they are communicating with is in-fact that intended party. Or put another way, how can Alice faithfully communicate with Bob digitally without being able to physically verify Bob's identity.
 
-The answer to this is through a CA (Certificate Authority) essentially a third party that both parties trust. The CA issues and signs digital certificates that can be used to verify an entity. In this case person B may request a certificate to be used by others to verify itself. In theory, if Alice and Bob both trust the CA, and the CA has given Bob a certificate. A certificate that the CA has signed authenticating its origin. Then, when Alice is presented the Bob's by Bob Alice should trust that she is in fact communicating with Bob
+The answer to this is through a [CA](https://en.wikipedia.org/wiki/Certificate_authority) ([Certificate Authority](https://en.wikipedia.org/wiki/Certificate_authority)) essentially a third party that both parties trust. The CA issues and signs digital certificates that can be used to verify an entity. In this case person B may request a certificate to be used by others to verify itself. In theory, if Alice and Bob both trust the CA, and the CA has given Bob a certificate. A certificate that the CA has signed authenticating its origin. Then, when Alice is presented the Bob's by Bob Alice should trust that she is in fact communicating with Bob
 
 ## Certificate Request Process
 ### CSR
