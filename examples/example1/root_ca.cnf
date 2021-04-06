@@ -1,0 +1,58 @@
+# Root CA Configuration File.
+
+[ ca ]
+default_ca = root_ca
+
+# For further information see: https://www.openssl.org/docs/manmaster/man1/openssl-ca.html
+[ root_ca ]
+dir                     = ./ca                          # required.
+new_certs_dir           = $dir/newcerts                 # required.
+database                = $dir/index.txt                # required.
+serial                  = $dir/serial.txt               # required.
+private_key             = $dir/private/root.key.pem     # required.
+certificate             = $dir/certs/root.cert.pem      # required.
+default_md              = sha256                        # required.
+policy                  = policy_strict                 # required. See "Policy Format" section
+unique_subject          = no                            # Allow multiple certs with the same DN
+default_days            = 1825                          # Default to 5 years (Root vs Intermediate) if start/end date not provided
+name_opt                = ca_default                    # Display format of cert details when asking user to confirm signing
+cert_opt                = ca_default                    # Display format of cert details when asking user to confirm signing
+preserve                = no
+
+[ policy_strict ]
+countryName             = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+# For further information see: https://www.openssl.org/docs/manmaster/man1/openssl-req.html
+[ req ]
+prompt                  = no
+default_bits            = 4096
+distinguished_name      = req_distinguished_name
+string_mask             = utf8only
+default_md              = sha256
+
+# For further information see: https://en.wikipedia.org/wiki/Certificate_signing_request
+# For further information see: https://www.openssl.org/docs/manmaster/man1/openssl-req.html
+[ req_distinguished_name ]
+countryName             = US
+0.organizationName      = Test Company LLC
+commonName              = Test Company Root CA
+
+# For further information see: https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+# For further information see: https://tools.ietf.org/html/rfc5280.
+[ v3_ext_root ]
+subjectKeyIdentifier    = hash
+basicConstraints        = critical, CA:true
+keyUsage                = critical, cRLSign, keyCertSign
+
+# For further information see: https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+# For further information see: https://tools.ietf.org/html/rfc5280.
+[ v3_ext_sub ]
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always,issuer
+basicConstraints        = critical, CA:true, pathlen:0
+keyUsage                = critical, digitalSignature, cRLSign, keyCertSign
+extendedKeyUsage        = serverAuth,clientAuth
