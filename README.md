@@ -77,4 +77,38 @@ Let's take a look at the `example.com.csr.pem` CSR in `examples/example1/csr`, r
   0100 - 0c                                                .
 ```
 
-Here we can see some important information about the certificate that is being requested to be created. We can see the [DN](https://en.wikipedia.org/wiki/X.509) ([Distinguished Name](https://en.wikipedia.org/wiki/X.509)) which is essentially just information about the entity requesting the certificate this also further elaborated in [RFC 5280](https://tools.ietf.org/html/rfc5280). In this case we can the country `countryName` of the company, name of the company `organizationName`, and the specific domain/entity `commonName` the certificate is being requested for. In case it is not clear this CSR would be for a certificate to be used on a website with the domain `example.com`. There are two more important pieces of information shown as well. The encryption algorithm of the public key to be used in the certificate `rsaEncryption` and the signature algorithm of the CSR `sha256WithRSAEncryption`. This information will be put into the certificate issued by the CA
+Here we can see some important information about the certificate that is being requested to be created. We can see the [DN](https://en.wikipedia.org/wiki/X.509) ([Distinguished Name](https://en.wikipedia.org/wiki/X.509)) which is essentially just information about the entity requesting the certificate this also further elaborated in [RFC 5280](https://tools.ietf.org/html/rfc5280). In this case we can the country `countryName` of the company, name of the company `organizationName`, and the specific domain/entity `commonName` the certificate is being requested for. In case it is not clear this CSR would be for a certificate to be used on a website with the domain `example.com`. There are two more important pieces of information shown as well. The encryption algorithm of the public key to be used in the certificate `rsaEncryption` and the signature algorithm of the CSR `sha256WithRSAEncryption`. This information will be put into the certificate issued by the CA.
+
+## Certificate Chain of Trust
+As mentioned earlier a certificate is signed by the CA and created from a CSR. What happens behind the scenes here is that another certificate is actually used to sign the certificate to be created from the CSR by the CA. Let's take a look at how this works.
+
+```
+$ openssl x509 -noout -text -in certs/root.cert.pem
+        Issuer: C=US, O=Test Company LLC, CN=Test Company Root CA
+        Subject: C=US, O=Test Company LLC, CN=Test Company Root CA
+        X509v3 Subject Key Identifier:
+            09:9A:5F:43:25:6F:47:48:08:32:C5:4E:76:EA:35:03:0C:69:31:92
+
+$ openssl x509 -noout -text -in certs/sub.cert.pem
+        Issuer: C=US, O=Test Company LLC, CN=Test Company Root CA
+        Subject: C=US, O=Test Company LLC, CN=Test Company Sub CA
+        X509v3 Subject Key Identifier:
+            50:1F:B1:61:61:55:14:71:AA:6D:2B:78:A6:B8:B6:34:21:52:80:A7
+        X509v3 Authority Key Identifier:
+            keyid:09:9A:5F:43:25:6F:47:48:08:32:C5:4E:76:EA:35:03:0C:69:31:92
+
+$ openssl x509 -noout -text -in certs/example.com.cert.pem
+        Issuer: C=US, O=Test Company LLC, CN=Test Company Sub CA
+        Subject: C=US, O=Test Company LLC, CN=example.com
+        X509v3 Subject Key Identifier:
+            03:87:6C:4B:F3:FC:82:0B:67:49:A9:F4:A8:74:62:4A:60:BB:AC:A7
+        X509v3 Authority Key Identifier:
+            keyid:50:1F:B1:61:61:55:14:71:AA:6D:2B:78:A6:B8:B6:34:21:52:80:A7
+```
+Notice at the bottom we have the cert that would eventually be made from the CSR that we looked at earlier. Notice for all 3 certificates there is an `Issuer:` and `Subject:`. You'll notice the information listed on those lines is the DN information that came from a CSR. This information allows us to quickly see who signed and created the certificate the `Issuer:` and the for what entity/domain the certificate was created for the `Subject:` But that information alone would not be sufficiently secure. As just text added to a cert that information could be forged or manipulated.
+
+ASN1 CERT
+bash-3.2$ /usr/local/opt/openssl@1.1/bin/openssl asn1parse -i -inform PEM -dump -in certs/example.com.cert.pem
+
+Get Binary format
+openssl x509 -in certs/example.com.cert.pem -outform DER
